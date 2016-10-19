@@ -16,7 +16,6 @@ if ( ! exists('BIODB.XML')) {
 	BIODB.TXT  <- 'txt'
 	BIODB.XML  <- 'xml'
 	BIODB.CSV  <- 'csv'
-	BIODB.DATAFRAME  <- 'dataframe'
 
 	#############
 	# DATABASES #

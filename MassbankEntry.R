@@ -1,4 +1,4 @@
-if ( ! exists('MassbankEntry')) { # Do not load again if already loaded
+if ( ! exists('MassbankEntry')) {
 
 	source('BiodbEntry.R')
 

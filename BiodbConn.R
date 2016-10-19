@@ -48,9 +48,9 @@ if ( ! exists('BiodbConn')) {
 	
 	# Download entry content from the public database.
 	# type      The entry type.
-	# id        The ID of the entry to get.
-	# RETURN    An entry content downloaded from database.
-	BiodbConn$methods( getEntryContent = function(id) {
+	# ids       A vector of accession IDs of the entries to get.
+	# RETURN    A vector of entry contents. An entry content will be set to NA_character_ if content cannot be found.
+	BiodbConn$methods( getEntryContent = function(ids) {
 		stop("Method getEntryContent() is not implemented in concrete class.")
 	})
 	

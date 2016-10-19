@@ -1,6 +1,7 @@
 if ( ! exists('MassFiledbConn')) {
 
 	source('MassdbConn.R')
+	source('MassFiledbEntry.R')
 	
 	# LCMS File db.
 	# In this type of database, a single file is provided in CSV format. Default separator is tabulation.
@@ -124,7 +125,42 @@ if ( ! exists('MassFiledbConn')) {
 	##########################
 
 	MassFiledbConn$methods( getEntryContentType = function(type) {
-		return(BIODB.DATAFRAME)
+		return(BIODB.CSV)
+	})
+
+	#####################
+	# GET ENTRY CONTENT #
+	#####################
+	
+	MassFiledbConn$methods( getEntryContent = function(ids) {
+
+		# Init db
+		.self$.init.db()
+
+		# Initialize return values
+		contents <- rep(NA_character_, length(ids))
+
+		# Loop on all ids
+		for (id in ids) {
+
+			# Get data frame
+			peaks <- .self$.select(compound.ids = id)
+
+			# Transform it in string
+			tc <- textConnection("csv", "w")
+			write.csv(peaks, tc, row.names = FALSE)
+			contents[match(id, ids)] <- paste(csv, collapse = "\n")
+		}
+
+		return(contents)
+	})
+	
+	################
+	# CREATE ENTRY #
+	################
+	
+	MassFiledbConn$methods( createEntry = function(content, drop = TRUE) {
+		return(createMassFiledbEntryFromCsv(content, drop = drop))
 	})
 
 	################
@@ -207,12 +243,14 @@ if ( ! exists('MassFiledbConn')) {
 	# GET ENTRY IDS #
 	#################
 	
-	MassFiledbConn$methods( getEntryIds = function(type) {
+	MassFiledbConn$methods( getEntryIds = function(max.results = NA_integer_) {
 
 		ids <- NA_character_
 
-		if (type %in% c(BIODB.SPECTRUM, BIODB.COMPOUND))
-			ids <- as.character(.self$.select(cols = if (type == BIODB.SPECTRUM) BIODB.ACCESSION else BIODB.COMPOUND.ID, drop = TRUE, uniq = TRUE, sort = TRUE))
+		ids <- as.character(.self$.select(cols = BIODB.ACCESSION, drop = TRUE, uniq = TRUE, sort = TRUE))
+
+		if ( ! is.na(max.results) && length(ids) > max.results)
+			ids <- ids[1:max.results];
 
 		return(ids)
 	})
@@ -221,8 +259,8 @@ if ( ! exists('MassFiledbConn')) {
 	# GET NB ENTRIES #
 	##################
 	
-	MassFiledbConn$methods( getNbEntries = function(type) {
-		return(length(.self$getEntryIds(type)))
+	MassFiledbConn$methods( getNbEntries = function() {
+		return(length(.self$getEntryIds()))
 	})
 
 	###############################
