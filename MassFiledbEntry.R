@@ -23,7 +23,7 @@ if ( ! exists('MassFiledbEntry')) {
 			entry <- MassFiledbEntry$new()
 
 			# Convert string to data frame
-			tc <- textConnection("csv", "r")
+			tc <- textConnection("csv", "r", local = TRUE)
 			df <- read.csv(tc)
 
 			entries <- c(entries, entry)

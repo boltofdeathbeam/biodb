@@ -147,7 +147,7 @@ if ( ! exists('MassFiledbConn')) {
 			peaks <- .self$.select(compound.ids = id)
 
 			# Transform it in string
-			tc <- textConnection("csv", "w")
+			tc <- textConnection("csv", "w", local = TRUE)
 			write.csv(peaks, tc, row.names = FALSE)
 			contents[match(id, ids)] <- paste(csv, collapse = "\n")
 		}
