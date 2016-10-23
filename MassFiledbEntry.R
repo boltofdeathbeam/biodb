@@ -19,9 +19,14 @@ if ( ! exists('MassFiledbEntry')) {
 		# Loop on all contents
 		for (csv in contents) {
 
+			# Create instance
+			entry <- MassFiledbEntry$new()
+
 			# Convert string to data frame
-			tc <- textConnection("csv", "w")
+			tc <- textConnection("csv", "r")
 			df <- read.csv(tc)
+
+			entries <- c(entries, entry)
 		}
 
 		# Replace elements with no accession id by NULL
